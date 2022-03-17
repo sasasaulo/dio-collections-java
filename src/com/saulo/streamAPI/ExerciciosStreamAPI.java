@@ -1,9 +1,7 @@
 package com.saulo.streamAPI;
 
 import java.util.*;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
+import java.util.function.*;
 import java.util.stream.Collectors;
 
 public class ExerciciosStreamAPI {
@@ -86,20 +84,57 @@ public class ExerciciosStreamAPI {
 
         System.out.println("=====================================================================");
 
-//        System.out.println("Mostre a média dos números: ");
-//        numerosAleatorios1.stream()
-//                .average()
-//                .ifPresent(System.out::println);
-//        numerosAleatorios.stream()
-//                .mapToInt(Integer::parseInt)
-//                .average()
-//                .ifPresent(System.out::println);
+        System.out.println("Mostre a média dos números: ");
+        System.out.println("Antes do lambda:");
+        numerosAleatorios.stream()
+                .mapToInt(new ToIntFunction<String>() {
+                    @Override
+                    public int applyAsInt(String s) {
+                        return Integer.parseInt(s);
+                    }
+                })
+                .average()
+                .ifPresent(new DoubleConsumer() {
+                    @Override
+                    public void accept(double v) {
+                        System.out.println(v);
+                    }
+                });
 
-//        System.out.println("Remova os valores ímpares: ");
-//        numerosAleatorios1.removeIf(integer -> integer % 2 != 0);
-//        System.out.println(numerosAleatorios1);
-//        numerosAleatoriosInteger.removeIf(i -> (i % 2 != 0));
-//        System.out.println(numerosAleatoriosInteger);
+        System.out.println("Depois do lambda:");
+        numerosAleatorios.stream()
+                .mapToInt(Integer::parseInt)     //s -> Integer.parseInt(s)
+                .average()
+                .ifPresent(System.out::println); //.ifPresent(v -> System.out.println(v));
+
+
+
+
+
+        System.out.println("Remova os valores ímpares: ");
+        numerosAleatorios =
+                Arrays.asList("1", "0", "4", "1", "2", "3", "9", "9", "6", "5");
+
+        List<Integer> listaNumerosAleatorios = numerosAleatorios.stream()
+                .map(Integer::parseInt)
+                .collect(Collectors.toList());
+
+        List<Integer> listaNumerosAleatorios2 = listaNumerosAleatorios;
+
+        System.out.println("Antes do lambda/reference method");
+        listaNumerosAleatorios.removeIf(new Predicate<Integer>() {
+            @Override
+            public boolean test(Integer i) {
+                if (i % 2 != 0) return true;
+                return false;
+            }
+        });
+        System.out.println(listaNumerosAleatorios);
+
+        System.out.println("Depois do lambda/reference method");
+        listaNumerosAleatorios.removeIf(i -> (i % 2 != 0));
+        System.out.println(listaNumerosAleatorios);
+
 
 //        Para você
 //        System.out.println("Ignore os 3 primeiros elementos da lista e imprima o restante:");
